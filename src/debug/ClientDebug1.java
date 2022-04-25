@@ -1,7 +1,6 @@
 package debug;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
@@ -11,9 +10,10 @@ public class ClientDebug1 {
         System.out.println("10. We start work with client!");
         try {
             Socket socket = new Socket("127.0.0.1", 5000);
-            Scanner in = new Scanner(System.in);
             PrintWriter pW = new PrintWriter(socket.getOutputStream());
             pW.println(0);
+            pW.flush();
+            pW.println("Pre-build-test");
             pW.flush();
             new Thread() {
                 Scanner scanner = new Scanner(socket.getInputStream());

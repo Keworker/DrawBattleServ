@@ -9,6 +9,7 @@ public abstract class Room {
     protected ArrayList<User> members;
     protected short maxSize;
     protected short gameStage;
+    protected boolean open = true;
 
     public Room(long id) {
         this.id = id;
@@ -19,7 +20,7 @@ public abstract class Room {
     public abstract boolean updateGameStage();
 
     public boolean addUser(long id) {
-        if (members.size() < maxSize) {
+        if (open && members.size() < maxSize) {
             members.add(new User(id));
             return true;
         }

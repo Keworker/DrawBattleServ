@@ -12,6 +12,7 @@ public class User {
     private InputStream in;
     private OutputStream out;
     private PrintWriter printWriter;
+    private Socket socket;
 
     public User(long id) {
         this.id = id;
@@ -19,6 +20,7 @@ public class User {
     }
 
     public void setSocket(Socket socket) {
+        this.socket = socket;
         try {
             in = socket.getInputStream();
             out = socket.getOutputStream();
@@ -27,6 +29,10 @@ public class User {
         catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Socket getSocket() {
+        return socket;
     }
 
     public InputStream getIn() {

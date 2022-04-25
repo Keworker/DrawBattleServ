@@ -1,7 +1,6 @@
 package debug;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
@@ -14,6 +13,8 @@ public class ClientDebug2 {
             Scanner in = new Scanner(System.in);
             PrintWriter pW = new PrintWriter(socket.getOutputStream());
             pW.println(1);
+            pW.flush();
+            pW.println("Pre-build-test");
             pW.flush();
             new Thread() {
                 Scanner scanner = new Scanner(socket.getInputStream());

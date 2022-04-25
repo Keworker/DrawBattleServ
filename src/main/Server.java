@@ -23,7 +23,6 @@ public class Server {
     int rId = 0;
 
     public Server() {
-        in = new Scanner(System.in);
         rooms = new ArrayList<Room>();
         users = new ArrayList<User>();
         try {
@@ -31,6 +30,7 @@ public class Server {
             System.out.println(logStart + "22. main.Server is ready.");
             while (true) {
                 Socket socket = serverSocket.accept();
+                in = new Scanner(socket.getInputStream());
                 System.out.println(logStart + "25. Somebody is watching me!");
                 User user = new User(id);
                 id++;
@@ -77,26 +77,29 @@ public class Server {
     }
 
     private class ReaderThread extends Thread {
-        InputStream in;
         User user;
 
         public ReaderThread(User user) {
-            this.in = user.getIn();
             this.user = user;
         }
 
         @Override
         public void run() {
-            Scanner in = new Scanner(this.in);
-            while (in.hasNext()) {
-                String message = in.nextLine();
-                System.out.println(logStart + "68. main.Server got It: " + message + " from "
-                        + user.getId() + " room ");
-                user.getPrintWriter().println("\tresponse 200:\n" + message);
-                user.getPrintWriter().flush();
-                for (Room room : rooms) {
-                    System.out.println(logStart + room.toString());
+            try {
+                Scanner in = new Scanner(user.getSocket().getInputStream());
+                while (true) {
+                    String message = in.nextLine();
+                    System.out.println(logStart + "68. main.Server got It request: " + message + " from "
+                            + user.getId() + " room ");
+                    user.getPrintWriter().println("\tresponse 200:\n" + message);
+                    user.getPrintWriter().flush();
+                    for (Room room : rooms) {
+                        System.out.println(logStart + room.toString());
+                    }
                 }
+            }
+            catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
