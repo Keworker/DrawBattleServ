@@ -27,21 +27,14 @@ public class Server {
         users = new ArrayList<User>();
         try {
             serverSocket = new ServerSocket(5000);
-            System.out.println(logStart + "22. main.Server is ready.");
+            System.out.println("!start");
             while (true) {
                 Socket socket = serverSocket.accept();
                 in = new Scanner(socket.getInputStream());
-                System.out.println(logStart + "25. Somebody is watching me!");
-                User user = new User(id);
-                id++;
+                User user = new User(id); id++;
                 user.setSocket(socket);
-                users.add(user);
-                toRoom(user, in.nextInt());
                 ReaderThread readerThread = new ReaderThread(user);
                 readerThread.start();
-                for (Room room : rooms) {
-                    System.out.println(logStart + room.toString());
-                }
             }
         }
         catch (IOException e) {
@@ -87,14 +80,54 @@ public class Server {
         public void run() {
             try {
                 Scanner in = new Scanner(user.getSocket().getInputStream());
-                while (true) {
-                    String message = in.nextLine();
-                    System.out.println(logStart + "68. main.Server got It request: " + message + " from "
-                            + user.getId() + " room ");
-                    user.getPrintWriter().println("\tresponse 200:\n" + message);
-                    user.getPrintWriter().flush();
-                    for (Room room : rooms) {
-                        System.out.println(logStart + room.toString());
+                main: while (true) {
+                    if (in.hasNext()) {
+                        String[] message = in.nextLine().split("/");
+                        for (String ss : message) {
+                            System.out.print(ss + "/");
+                        }
+                        System.out.print("\n");
+                        try {
+                            switch (message[0]) {
+                                case "init": {
+                                    if (!user.isInit()) {
+                                        user.setName(message[2]);
+                                        users.add(user);
+                                        toRoom(user, Integer.parseInt(message[1]));
+                                        user.getPrintWriter().println("init/200/id=" + user.getId());
+                                        user.getPrintWriter().flush();
+                                        System.out.print(logStart);
+                                        for (Room room : rooms) {
+                                            System.out.println(room.toString());
+                                        }
+                                        user.setInit();
+                                    }
+                                    else {
+                                        System.out.println("User: " + user.getId() + ". Bad request.");
+                                        user.getPrintWriter().println("init/403/Already init");
+                                        user.getPrintWriter().flush();
+                                    }
+                                    break;
+                                }
+                                case "run": {
+                                    if (!user.getRoom().run()) {
+                                        user.getPrintWriter().println("run/409/Wait");
+                                    }
+                                    user.getPrintWriter().flush();
+                                    break;
+                                }
+                                default: {
+                                    System.out.println("User: " + user.getId() + ". Bad request.");
+                                    user.getPrintWriter().println("Null/404/Not found");
+                                    user.getPrintWriter().flush();
+                                }
+                            }
+                        }
+                        catch (ArrayIndexOutOfBoundsException exception) {
+                            System.out.println("User: " + user.getId() + ". Bad request.");
+                            user.getPrintWriter().println("Null/400/Wrong request");
+                            user.getPrintWriter().flush();
+                        }
                     }
                 }
             }

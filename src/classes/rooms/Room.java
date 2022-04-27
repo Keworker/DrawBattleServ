@@ -30,7 +30,23 @@ public abstract class Room {
     public boolean addUser(User user) {
         if (members.size() < maxSize) {
             members.add(user);
-            user.getPrintWriter().println("\tresponse 200:\n" + this.toString());
+            user.setRoom(this);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean run() {
+        if (members.size() == maxSize) {
+            String team = "";
+            for (User user : members) {
+                team += user.getName() + ",";
+            }
+            for (User user : members) {
+                user.getPrintWriter().println("run/200/" + team);
+                user.getPrintWriter().flush();
+            }
+            new GameTimer().start();
             return true;
         }
         return false;
@@ -48,10 +64,18 @@ public abstract class Room {
         return gameStage;
     }
 
-    public class Timer extends Thread {
+    @Override
+    public String toString() {
+        String s = "Room {" + "\n\tid = " + id + ", \n\tmembers:";
+        for (int i = 0; i < members.size(); i++) {
+            s += "\n\t" + members.get(i).toString();
+        }
+        return  s + ",\n\tmaxSize = " + maxSize + ",\n\tgameStage = " + gameStage + "\n}";
+    }
+
+    public class GameTimer extends Thread {
         @Override
         public void run() {
-            super.run();
             try {
                 sleep(90000);
             }
@@ -60,14 +84,5 @@ public abstract class Room {
             }
             updateGameStage();
         }
-    }
-
-    @Override
-    public String toString() {
-        String s = "Room {" + "\n\tid = " + id + ", \n\tmembers:";
-        for (int i = 0; i < members.size(); i++) {
-            s += "\n\t" + members.get(i).toString();
-        }
-        return  s + ",\n\tmaxSize = " + maxSize + ",\n\tgameStage = " + gameStage + "\n}";
     }
 }

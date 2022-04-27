@@ -10,11 +10,8 @@ public class ClientDebug2 {
         System.out.println("10. We start work with client!");
         try {
             Socket socket = new Socket("127.0.0.1", 5000);
-            Scanner in = new Scanner(System.in);
             PrintWriter pW = new PrintWriter(socket.getOutputStream());
-            pW.println(1);
-            pW.flush();
-            pW.println("Pre-build-test");
+            pW.println("init/1/Nick");
             pW.flush();
             new Thread() {
                 Scanner scanner = new Scanner(socket.getInputStream());
@@ -23,6 +20,23 @@ public class ClientDebug2 {
                     while (true) {
                         if (scanner.hasNext()) {
                             System.out.println(scanner.nextLine());
+                        }
+                    }
+                }
+            }.start();
+            new Thread() {
+                Scanner in = new Scanner(System.in);
+                @Override
+                public void run() {
+                    while (true) {
+                        if (in.hasNext()) {
+                            switch (in.nextLine()) {
+                                case "start-game": {
+                                    pW.println("run/");
+                                    pW.flush();
+                                    break;
+                                }
+                            }
                         }
                     }
                 }

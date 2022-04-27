@@ -1,5 +1,7 @@
 package classes;
 
+import classes.rooms.Room;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -13,10 +15,15 @@ public class User {
     private OutputStream out;
     private PrintWriter printWriter;
     private Socket socket;
+    private String name;
+    private boolean isInit;
+    private Room room;
 
     public User(long id) {
         this.id = id;
+        //Ник взять из бд
         this.gameStage = 0;
+        this.isInit = false;
     }
 
     public void setSocket(Socket socket) {
@@ -57,8 +64,32 @@ public class User {
 
     @Override
     public String toString() {
-        return "User {" + "\n\t\tid = " + id + ", \n\t\tgameStage = " + gameStage +
+        return "User " + name +  " {" + "\n\t\tid = " + id + ", \n\t\tgameStage = " + gameStage +
                 ", \n\t\tin = " + in.toString() + ", \n\t\tout = " + out.toString() +
                 ", \n\t\tprintWriter = " + printWriter.toString() + "\n\t}";
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isInit() {
+        return isInit;
+    }
+
+    public void setInit() {
+        isInit = true;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
     }
 }
