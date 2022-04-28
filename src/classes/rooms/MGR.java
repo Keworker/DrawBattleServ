@@ -2,6 +2,8 @@ package classes.rooms;
 
 import classes.User;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.Scanner;
 
 import static java.lang.Thread.sleep;
@@ -25,33 +27,39 @@ public class MGR extends Room {
                     members.get(i).getPrintWriter().println("request/text");
                     members.get(i).getPrintWriter().flush();
                     Scanner in = new Scanner(members.get(i).getIn());
-                    String cur = "AFFF"; //Рандомный текст из списка
+                    txts[gameStage / 2 - 1][(i + offset) % maxSize] = LC + "Random text";
                     for (int j = 0; j < 15; j++) {
-                        if (in.hasNext()) {
-                            String s[] = in.nextLine().split("/");
-                            if (s[0] == "text") {
-                                txts[gameStage / 2][(i + offset) % maxSize] = s[1];
-                            }
-
-                        }
                         try {
+                            if (members.get(i).getIn().available() > 0) {
+                                String s[] = in.nextLine().split("/");
+                                if (s[0].matches("text")) {
+                                    System.out.println(2);
+                                    txts[gameStage / 2 - 1][(i + offset) % maxSize] = s[1];
+                                    break;
+                                }
+                            }
                             sleep(1000);
                         }
-                        catch (InterruptedException e) {
+                        catch (IOException | InterruptedException e) {
                             e.printStackTrace();
                         }
-                        txts[gameStage / 2][(i + offset) % maxSize] = LC + cur;
                     }
                     //К строке прибавляется рандомная история из 20-30 заранее забитых
                 }
                 for (int i = 0; i < members.size(); i++) {
-                    members.get(i).getPrintWriter().println("text/" + txts[gameStage / 2][
+                    members.get(i).getPrintWriter().println(members.get(i).getId() + ": text/" + txts[gameStage / 2][
                             (i < offset) ? (maxSize - (offset - i)) : (i - offset)]);
                     members.get(i).getPrintWriter().flush();
                 }
+
+                for (String[] txt : txts) {
+                    for (String t : txt) {
+                        System.out.print(t + " ");
+                    }
+                }
             }
             else {
-                //Получить рисунки и разослать их другим участникам
+
             }
         }
         else {
@@ -60,6 +68,7 @@ public class MGR extends Room {
         }
         offset++;
         gameStage++;
+        new GameTimer().start();
         return true;
     }
 }

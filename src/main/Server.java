@@ -110,10 +110,45 @@ public class Server {
                                     break;
                                 }
                                 case "run": {
-                                    if (!user.getRoom().run()) {
-                                        user.getPrintWriter().println("run/409/Wait");
+                                    switch (message[1]) {
+                                        case "try": {
+                                            if (user.getRoom().canRun()) {
+                                                for (User u : user.getRoom().getMembers()) {
+                                                    u.getPrintWriter().println("request/run");
+                                                    u.getPrintWriter().flush();
+                                                }
+                                            }
+                                            break;
+                                        }
+                                        case "finnish": {
+                                            if (user.getRoom().run()) {
+                                                return;
+                                            }
+                                            else {
+                                                user.getPrintWriter().println("run/409/Wait");
+                                                user.getPrintWriter().flush();
+                                            }
+                                            break;
+                                        }
                                     }
-                                    user.getPrintWriter().flush();
+                                    break;
+                                }
+                                case "exit": {
+                                    if (user.getRoom().kickUser(user.getId())) {
+                                        for (int i = 0; i < users.size(); i++) {
+                                            if (users.get(i).getId() == user.getId()) {
+                                                users.remove(i);
+                                                user.getPrintWriter().println("exit/200/goodbye");
+                                                user.getPrintWriter().flush();
+                                                return;
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        System.out.println("User: " + user.getId() + ". Bad request.");
+                                        user.getPrintWriter().println("exit/403/can not");
+                                        user.getPrintWriter().flush();
+                                    }
                                     break;
                                 }
                                 default: {

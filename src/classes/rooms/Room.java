@@ -36,6 +36,16 @@ public abstract class Room {
         return false;
     }
 
+    public boolean kickUser(long id) {
+        for (int i = 0; i < members.size(); i++) {
+            if (members.get(i).getId() == id) {
+                members.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean run() {
         if (members.size() == maxSize) {
             String team = "";
@@ -51,6 +61,8 @@ public abstract class Room {
         }
         return false;
     }
+
+    public boolean canRun() {return members.size() == maxSize;}
 
     public long getId() {
         return id;
@@ -77,7 +89,8 @@ public abstract class Room {
         @Override
         public void run() {
             try {
-                sleep(90000);
+                //sleep(90000);
+                sleep(10000);
             }
             catch (InterruptedException e) {
                 e.printStackTrace();
