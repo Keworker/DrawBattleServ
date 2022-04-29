@@ -117,6 +117,11 @@ public class Server {
                                                     u.getPrintWriter().println("request/run");
                                                     u.getPrintWriter().flush();
                                                 }
+                                                //Удалить всех юзеров с основново сервера
+                                            }
+                                            else {
+                                                user.getPrintWriter().println("run/409/Wait");
+                                                user.getPrintWriter().flush();
                                             }
                                             break;
                                         }

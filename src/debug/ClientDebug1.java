@@ -37,6 +37,11 @@ public class ClientDebug1 {
                                                 pW.flush();
                                                 break;
                                             }
+                                            case "image": {
+                                                pW.println("image/some image");
+                                                pW.flush();
+                                                break;
+                                            }
                                             case "run": {
                                                 pW.println("run/finnish");
                                                 pW.flush();

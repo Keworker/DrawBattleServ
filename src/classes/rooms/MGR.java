@@ -21,20 +21,20 @@ public class MGR extends Room {
 
     @Override
     public boolean updateGameStage() {
-        if (gameStage < 5) {
+        if (gameStage < maxSize) {
             if (gameStage % 2 == 0) {
                 for (int i = 0; i < members.size(); i++) {
                     members.get(i).getPrintWriter().println("request/text");
                     members.get(i).getPrintWriter().flush();
                     Scanner in = new Scanner(members.get(i).getIn());
-                    txts[gameStage / 2 - 1][(i + offset) % maxSize] = LC + "Random text";
+                    System.out.println(gameStage);
+                    txts[gameStage / 2][(i + offset) % maxSize] = LC + "Random text";
                     for (int j = 0; j < 15; j++) {
                         try {
                             if (members.get(i).getIn().available() > 0) {
                                 String s[] = in.nextLine().split("/");
                                 if (s[0].matches("text")) {
-                                    System.out.println(2);
-                                    txts[gameStage / 2 - 1][(i + offset) % maxSize] = s[1];
+                                    txts[gameStage / 2][(i + offset) % maxSize] = s[1];
                                     break;
                                 }
                             }
@@ -51,19 +51,62 @@ public class MGR extends Room {
                             (i < offset) ? (maxSize - (offset - i)) : (i - offset)]);
                     members.get(i).getPrintWriter().flush();
                 }
-
-                for (String[] txt : txts) {
-                    for (String t : txt) {
-                        System.out.print(t + " ");
-                    }
-                }
+//                for (String[] txt : txts) {
+//                    for (String t : txt) {
+//                        System.out.print(t + " ");
+//                    }
+//                }
             }
             else {
-
+                for (int i = 0; i < members.size(); i++) {
+                    members.get(i).getPrintWriter().println("request/image");
+                    members.get(i).getPrintWriter().flush();
+                    Scanner in = new Scanner(members.get(i).getIn());
+                    for (int j = 0; j < 15; j++) {
+                        try {
+                            if (members.get(i).getIn().available() > 0) {
+                                String s[] = in.nextLine().split("/");
+                                if (s[0].matches("image")) {
+                                    //get image
+                                    break;
+                                }
+                            }
+                            sleep(1000);
+                        }
+                        catch (IOException | InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                for (int i = 0; i < members.size(); i++) {
+                    members.get(i).getPrintWriter().println(members.get(i).getId() + ": some image got");
+                    members.get(i).getPrintWriter().flush();
+                }
             }
         }
         else {
-            //Разослать результаты
+            while (members.size() > 0) {
+                for (User u : members) {
+                    try {
+                        if (u.getIn().available() > 0) {
+                            Scanner in = new Scanner(u.getIn());
+                            if (in.nextLine() == "game/exit") {
+                                for (int i = 0; i < members.size(); i++) {
+                                    if (members.get(i).getId() == u.getId()) {
+                                        members.remove(i);
+                                        u.getPrintWriter().println("exit/200/goodbye");
+                                        u.getPrintWriter().flush();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            //удалить комнату с сервера
             return false;
         }
         offset++;
