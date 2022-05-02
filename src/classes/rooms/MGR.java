@@ -16,7 +16,7 @@ public class MGR extends Room {
     public MGR(long id) {
         super(id);
         offset = 1;
-        maxSize = 6;
+        maxSize = 2;
     }
 
     @Override
@@ -34,6 +34,7 @@ public class MGR extends Room {
                             if (members.get(i).getIn().available() > 0) {
                                 String s[] = in.nextLine().split("/");
                                 if (s[0].matches("text")) {
+                                    System.out.println(s[1]);
                                     txts[gameStage / 2][(i + offset) % maxSize] = s[1];
                                     break;
                                 }
@@ -46,11 +47,7 @@ public class MGR extends Room {
                     }
                     //К строке прибавляется рандомная история из 20-30 заранее забитых
                 }
-                for (int i = 0; i < members.size(); i++) {
-                    members.get(i).getPrintWriter().println(members.get(i).getId() + ": text/" + txts[gameStage / 2][
-                            (i < offset) ? (maxSize - (offset - i)) : (i - offset)]);
-                    members.get(i).getPrintWriter().flush();
-                }
+
 //                for (String[] txt : txts) {
 //                    for (String t : txt) {
 //                        System.out.print(t + " ");

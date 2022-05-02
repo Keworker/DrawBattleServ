@@ -94,7 +94,14 @@ public class Server {
                                         user.setName(message[2]);
                                         users.add(user);
                                         toRoom(user, Integer.parseInt(message[1]));
-                                        user.getPrintWriter().println("init/200/id=" + user.getId());
+                                        user.getPrintWriter().print("init/200/" + user.getId() + "/");
+                                        String s = "";
+                                        for (User u : user.getRoom().getMembers()) {
+                                            s += u.getName() + ";";
+                                            u.getPrintWriter().println("new/" + user.getName());
+                                            u.getPrintWriter().flush();
+                                        }
+                                        user.getPrintWriter().println(s);
                                         user.getPrintWriter().flush();
                                         System.out.print(logStart);
                                         for (Room room : rooms) {
@@ -113,8 +120,12 @@ public class Server {
                                     switch (message[1]) {
                                         case "try": {
                                             if (user.getRoom().canRun()) {
+                                                String q = "";
                                                 for (User u : user.getRoom().getMembers()) {
-                                                    u.getPrintWriter().println("request/run");
+                                                    q += u.getName() + ",";
+                                                }
+                                                for (User u : user.getRoom().getMembers()) {
+                                                    u.getPrintWriter().println("request/run/" + q);
                                                     u.getPrintWriter().flush();
                                                 }
                                                 //Удалить всех юзеров с основново сервера
