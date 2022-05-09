@@ -94,7 +94,8 @@ public class Server {
                                         user.setName(message[2]);
                                         users.add(user);
                                         toRoom(user, Integer.parseInt(message[1]));
-                                        user.getPrintWriter().print("init/200/" + user.getId() + "/");
+                                        user.getPrintWriter().println("init/200/" + user.getId() + "/");
+                                        user.getPrintWriter().flush();
                                         String s = "";
                                         for (User u : user.getRoom().getMembers()) {
                                             s += u.getName() + ";";
@@ -129,6 +130,7 @@ public class Server {
                                                     u.getPrintWriter().flush();
                                                 }
                                                 user.getRoom().run();
+                                                return;
                                                 //Удалить всех юзеров с основново сервера
                                             }
                                             else {

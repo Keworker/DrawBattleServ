@@ -12,6 +12,7 @@ public class MGR extends Room {
     final String LC = "*lost connected*";
     String txts[][] = {{LC, LC, LC, LC, LC, LC}, {LC, LC, LC, LC, LC, LC}, {LC, LC, LC, LC, LC, LC}};
     int offset;
+    String text;
 
     public MGR(long id) {
         super(id);
@@ -36,6 +37,7 @@ public class MGR extends Room {
                                 if (s[0].matches("text")) {
                                     System.out.println(s[1]);
                                     txts[gameStage / 2][(i + offset) % maxSize] = s[1];
+                                    text = s[1];
                                     break;
                                 }
                             }
@@ -48,7 +50,8 @@ public class MGR extends Room {
                     //К строке прибавляется рандомная история из 20-30 заранее забитых
                 }
                 for (int i = 0; i < members.size(); i++) {
-                    members.get(i).getPrintWriter().println("text/" + txts[prevId(i)]);
+//                    members.get(i).getPrintWriter().println("text/" + txts[0][prevId(i)]);
+                    members.get(i).getPrintWriter().println("text/" + text);
                     members.get(i).getPrintWriter().flush();
                 }
             }

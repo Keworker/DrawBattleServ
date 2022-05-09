@@ -52,10 +52,6 @@ public abstract class Room {
             for (User user : members) {
                 team += user.getName() + ",";
             }
-            for (User user : members) {
-                user.getPrintWriter().println("run/200/" + team);
-                user.getPrintWriter().flush();
-            }
             new GameTimer().start();
             return true;
         }
@@ -90,7 +86,7 @@ public abstract class Room {
         public void run() {
             try {
                 //sleep(90000);
-                sleep(5000);
+                sleep(15000);
             }
             catch (InterruptedException e) {
                 e.printStackTrace();
