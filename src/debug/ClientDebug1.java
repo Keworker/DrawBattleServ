@@ -21,7 +21,7 @@ public class ClientDebug1 {
                 Scanner scanner = new Scanner(socket.getInputStream());
                 @Override
                 public void run() {
-                    next: while (true) {
+                    while (true) {
                         if (scanner.hasNext()) {
                             String s[] = scanner.nextLine().split("/");
                             for (String ss : s) {
@@ -51,7 +51,7 @@ public class ClientDebug1 {
                                         break;
                                     }
                                     case "init": {
-                                        continue next;
+                                        continue;
                                     }
                                     case "run": {
                                         if (Integer.parseInt(s[1]) == 200) {

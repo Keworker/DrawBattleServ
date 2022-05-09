@@ -128,6 +128,7 @@ public class Server {
                                                     u.getPrintWriter().println("request/run/" + q);
                                                     u.getPrintWriter().flush();
                                                 }
+                                                user.getRoom().run();
                                                 //Удалить всех юзеров с основново сервера
                                             }
                                             else {

@@ -16,12 +16,12 @@ public class MGR extends Room {
     public MGR(long id) {
         super(id);
         offset = 1;
-        maxSize = 2;
+        maxSize = 1;
     }
 
     @Override
     public boolean updateGameStage() {
-        if (gameStage < maxSize) {
+        if (gameStage < maxSize + 1) {
             if (gameStage % 2 == 0) {
                 for (int i = 0; i < members.size(); i++) {
                     members.get(i).getPrintWriter().println("request/text");
@@ -47,12 +47,10 @@ public class MGR extends Room {
                     }
                     //К строке прибавляется рандомная история из 20-30 заранее забитых
                 }
-
-//                for (String[] txt : txts) {
-//                    for (String t : txt) {
-//                        System.out.print(t + " ");
-//                    }
-//                }
+                for (int i = 0; i < members.size(); i++) {
+                    members.get(i).getPrintWriter().println("text/" + txts[prevId(i)]);
+                    members.get(i).getPrintWriter().flush();
+                }
             }
             else {
                 for (int i = 0; i < members.size(); i++) {
@@ -106,9 +104,23 @@ public class MGR extends Room {
             //удалить комнату с сервера
             return false;
         }
+        for (int i = 0; i < members.size(); i++) {
+            members.get(i).getPrintWriter().println("request/next");
+            members.get(i).getPrintWriter().flush();
+        }
         offset++;
         gameStage++;
         new GameTimer().start();
         return true;
+    }
+
+    int prevId(int id) {
+        if (id == 0) {
+            return maxSize - 1;
+        }
+        if (id == 1) {
+            return 0;
+        }
+        return id - 1;
     }
 }
